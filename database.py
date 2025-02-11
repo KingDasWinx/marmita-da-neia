@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Debug mode
-DEBUG = False
+DEBUG = True
 
 # Carrega as credenciais do arquivo .env
 SUPABASE_URL = os.getenv('SUPABASE_URL')
