@@ -2,6 +2,7 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
 from order import register_order
+from daily_orders import show_daily_orders
 
 console = Console()
 
@@ -24,6 +25,8 @@ def main_menu():
         
         if opcao == "1":
             register_order()
+        elif opcao == "2":
+            show_daily_orders()
         elif opcao == "0":
             break
 
