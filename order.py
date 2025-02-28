@@ -6,6 +6,8 @@ from order_items import select_marmitas, select_bebidas, select_adicionais, most
 import time
 import json
 import random
+import sys
+
 
 console = Console()
 
@@ -132,7 +134,7 @@ def mostrar_menu_pos_pedido(pedido, cliente):
             time.sleep(2)
 
 def register_order():
-    os.system('cls')
+    console.clear()
     client_id = Prompt.ask("[yellow]ID do cliente (ou 'novo' para novo cliente)[/yellow]")
     
     if client_id.lower() == 'novo':

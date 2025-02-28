@@ -93,7 +93,7 @@ def update_payment_status(order):
 def show_order_details(numero_pedido):
     order = get_order_details(numero_pedido)
     if not order:
-        console.print("\n[red]Pedido não encontrado![/red]")
+        console.print("\n[red]Pedido não encontrado para o dia de hoje![/red]")
         input("\nPressione Enter para continuar...")
         return
     

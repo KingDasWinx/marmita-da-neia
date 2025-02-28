@@ -102,8 +102,8 @@ def get_daily_orders():
     try:
         from datetime import datetime, timedelta
         
-        # Pega a data atual em UTC-3
-        today = datetime.now() - timedelta(hours=3)
+        # Use local date to filter today's orders - no need to subtract hours for UTC-3
+        today = datetime.now()
         start_of_day = today.strftime('%Y-%m-%d 00:00:00')
         end_of_day = today.strftime('%Y-%m-%d 23:59:59')
         
@@ -152,7 +152,7 @@ def save_order(client_id, address_id, marmitas, bebidas, tipo_feijao, total, for
     
     # Data e hora atual
     from datetime import datetime
-    dt_registro = datetime.now().isoformat()
+    dt_registro = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
     query = """
         INSERT INTO tb_pedido (
@@ -180,6 +180,13 @@ def save_order(client_id, address_id, marmitas, bebidas, tipo_feijao, total, for
 
 def get_order_details(numero_pedido):
     try:
+        from datetime import datetime
+        
+        # Filtrar por data atual
+        today = datetime.now()
+        start_of_day = today.strftime('%Y-%m-%d 00:00:00')
+        end_of_day = today.strftime('%Y-%m-%d 23:59:59')
+        
         query = supabase.table('tb_pedido') \
             .select('''
                 *,
@@ -187,6 +194,8 @@ def get_order_details(numero_pedido):
                 tb_endereco(rua, bairro, referencia)
             ''') \
             .eq('numero_pedido', numero_pedido) \
+            .gte('dt_registro', start_of_day) \
+            .lte('dt_registro', end_of_day) \
             .execute()
             
         if query.data:
