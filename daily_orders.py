@@ -123,9 +123,10 @@ def show_order_details(numero_pedido):
     
     # Menu de opções
     menu_text = """
-1. Editar
-2. Excluir
-3. Status Pagamento
+1. Imprimir
+2. Status Pagamento
+3. Editar
+4. Excluir
 0. Voltar
     """
     menu_panel = Panel(menu_text, title="Opções", border_style="yellow")
@@ -136,9 +137,17 @@ def show_order_details(numero_pedido):
         opcao = input("\nEscolha uma opção: ")
         
         if opcao == "1":
-            edit_order(order)
+            from printer import imprimir_pedido
+            imprimir_pedido(order, order['tb_cliente'])
+            input("\nPressione Enter para continuar...")
             return
         elif opcao == "2":
+            update_payment_status(order)
+            return
+        elif opcao == "3":
+            edit_order(order)
+            return
+        elif opcao == "4":
             if input("\nTem certeza que deseja excluir este pedido? (S/N): ").upper() == "S":
                 if delete_order(numero_pedido):
                     console.print("\n[green]Pedido excluído com sucesso![/green]")
@@ -147,9 +156,6 @@ def show_order_details(numero_pedido):
                 else:
                     console.print("\n[red]Erro ao excluir pedido![/red]")
                     input("\nPressione Enter para continuar...")
-        elif opcao == "3":
-            update_payment_status(order)
-            return
         elif opcao == "0":
             return
 

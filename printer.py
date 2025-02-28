@@ -1,14 +1,21 @@
 from datetime import datetime
-from escpos.usb import Usb
+from escpos.printer import Usb
 from database import DEBUG
+from rich.console import Console
+
+console = Console()
 
 def imprimir_pedido(pedido, cliente, quantidade_copias=1):
     data_atual = datetime.now().strftime('%d/%m/%Y')
 
     for i in range(quantidade_copias):
         if not DEBUG:
-            p = Usb(0x04b8, 0x0e27)
-            printer = p
+            try:
+                p = Usb(0x04b8, 0x0e27)
+                printer = p
+            except Exception as e:
+                console.print("[red]Erro: Nenhuma impressora detectada![/red]")
+                return
         else:
             class PrinterDebug:
                 def __init__(self):
@@ -63,7 +70,7 @@ def imprimir_pedido(pedido, cliente, quantidade_copias=1):
             
         printer.text(f"Feijão: {marmitas_json['tipo_feijao']}\n\n")
         
-        if pedido['obs']:
+        if pedido.get('obs'):
             printer.text(f"Obs: {pedido['obs']}\n\n")
         printer.text("----------------------------------------------\n\n")
 
@@ -71,9 +78,10 @@ def imprimir_pedido(pedido, cliente, quantidade_copias=1):
         printer.text(f"Forma de pagamento: {pedido['forma_pagamento']}\n")
         printer.text(f"Status do pagamento: {pedido['status_pagamento']}\n\n")
 
-        printer.text(f"Entrega: {pedido['endereco']['rua']}, {pedido['endereco']['bairro']}\n")
-        if pedido['endereco'].get('referencia'):
-            printer.text(f"Referência: {pedido['endereco']['referencia']}\n")
+        # Get address from tb_endereco instead of endereco
+        printer.text(f"Entrega: {pedido['tb_endereco']['rua']}, {pedido['tb_endereco']['bairro']}\n")
+        if pedido['tb_endereco'].get('referencia'):
+            printer.text(f"Referência: {pedido['tb_endereco']['referencia']}\n")
         printer.text("\n")
         
         printer.set(align='center')
