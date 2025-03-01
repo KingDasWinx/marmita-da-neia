@@ -2,3 +2,5 @@
 .env
 planilhas
 __pycache__
+
+.xlsx
