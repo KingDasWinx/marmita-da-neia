@@ -10,7 +10,7 @@ import random
 import sys
 
 
-# testes de pull e push
+# testes de pull e push 2.0
 
 console = Console()
 
