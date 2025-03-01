@@ -10,6 +10,8 @@ import random
 import sys
 
 
+# testes de pull e push
+
 console = Console()
 
 def get_new_address():
