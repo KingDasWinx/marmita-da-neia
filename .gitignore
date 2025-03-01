@@ -5,3 +5,8 @@ __pycache__
 
 .config
 .xlsx
+
+.config
+config.txt
+last_date.txt
+pd.txt

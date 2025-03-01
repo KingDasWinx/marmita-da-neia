@@ -552,7 +552,7 @@ def edit_order(order):
                     elif opcao_end.isdigit() and int(opcao_end) == len(addresses) + 1:
                         # Adicionar novo endereço
                         rua, bairro, referencia = get_new_address()
-                        novo_endereco = add_address(order['id_cliente'], rua, bairro, referencia)
+                        novo_endereco = register_address(order['id_cliente'], rua, bairro, referencia)
                         if novo_endereco and novo_endereco.get('id_endereco'):
                             if update_order_address(order['id_pedido'], novo_endereco['id_endereco']):
                                 console.print("\n[green]Novo endereço adicionado e associado ao pedido com sucesso![/green]")
@@ -580,7 +580,7 @@ def edit_order(order):
                     elif opcao_end == "1":
                         # Adicionar novo endereço
                         rua, bairro, referencia = get_new_address()
-                        novo_endereco = add_address(order['id_cliente'], rua, bairro, referencia)
+                        novo_endereco = register_address(order['id_cliente'], rua, bairro, referencia)
                         if novo_endereco and novo_endereco.get('id_endereco'):
                             if update_order_address(order['id_pedido'], novo_endereco['id_endereco']):
                                 console.print("\n[green]Novo endereço adicionado e associado ao pedido com sucesso![/green]")
