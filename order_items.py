@@ -4,6 +4,9 @@ from database import get_products_by_category
 import os
 import time
 
+# Re-export needed functions for import in other modules
+from database import get_products_by_category
+
 console = Console()
 
 def select_marmitas():
@@ -118,19 +121,72 @@ def select_adicionais(marmitas):
     return marmitas
 
 def calcular_subtotais(marmitas, bebidas):
-    subtotal_marmitas = sum(m['produto']['preco'] * m['quantidade'] for m in marmitas)
-    subtotal_bebidas = sum(b['produto']['preco'] * b['quantidade'] for b in bebidas)
-    subtotal_adicionais = sum(
-        sum(a['preco'] for a in m['adicionais'])
-        for m in marmitas
-    )
+    # Função auxiliar para pegar o preço de um produto com tratamento de erros
+    def get_preco(item):
+        try:
+            # Tenta acessar diretamente o preço do produto
+            if 'produto' in item and isinstance(item['produto'], dict) and 'preco' in item['produto']:
+                return item['produto']['preco']
+            # Tenta acessar o preço diretamente no item
+            elif 'preco' in item:
+                return item['preco']
+            # Valor padrão se não encontrar o preço
+            else:
+                print(f"Aviso: Preço não encontrado para o item {item}")
+                return 0
+        except Exception as e:
+            print(f"Erro ao obter preço: {str(e)}")
+            return 0
     
-    total = subtotal_marmitas + subtotal_bebidas + subtotal_adicionais
+    # Função auxiliar para pegar a quantidade com tratamento de erros
+    def get_quantidade(item):
+        try:
+            return item.get('quantidade', 1)
+        except Exception as e:
+            print(f"Erro ao obter quantidade: {str(e)}")
+            return 1
+    
+    # Função auxiliar para calcular o preço dos adicionais
+    def get_adicionais_preco(adicionais):
+        try:
+            if not adicionais:
+                return 0
+            
+            total_adicionais = 0
+            for adicional in adicionais:
+                if isinstance(adicional, dict):
+                    if 'preco' in adicional:
+                        total_adicionais += adicional['preco']
+                    # Se o adicional tem uma estrutura aninhada
+                    elif 'produto' in adicional and 'preco' in adicional['produto']:
+                        total_adicionais += adicional['produto']['preco']
+            return total_adicionais
+        except Exception as e:
+            print(f"Erro ao calcular adicionais: {str(e)}")
+            return 0
+    
+    # Calcula o subtotal das marmitas
+    subtotal_marmitas = 0
+    for m in marmitas:
+        preco = get_preco(m)
+        quantidade = get_quantidade(m)
+        adicionais_preco = get_adicionais_preco(m.get('adicionais', []))
+        subtotal_marmitas += (preco * quantidade) + adicionais_preco
+    
+    # Calcula o subtotal das bebidas
+    subtotal_bebidas = 0
+    for b in bebidas:
+        preco = get_preco(b)
+        quantidade = get_quantidade(b)
+        subtotal_bebidas += preco * quantidade
+    
+    # Calcula o total
+    total = subtotal_marmitas + subtotal_bebidas
     
     return {
         'marmitas': subtotal_marmitas,
         'bebidas': subtotal_bebidas,
-        'adicionais': subtotal_adicionais,
+        'adicionais': 0,  # Adicionais já estão incluídos no preço das marmitas
         'total': total
     }
 

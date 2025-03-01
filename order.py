@@ -3,6 +3,7 @@ from rich.prompt import Prompt
 import os
 from database import get_client, get_addresses, register_address, register_client, save_order, DEBUG
 from order_items import select_marmitas, select_bebidas, select_adicionais, mostrar_resumo_pedido
+from config import get_auto_print
 import time
 import json
 import random
@@ -111,6 +112,15 @@ def show_client_addresses(client_id, client_name):
                 return None
 
 def mostrar_menu_pos_pedido(pedido, cliente):
+    # Verifica se a impressão automática está habilitada
+    auto_print = get_auto_print()
+    if auto_print:
+        from printer import imprimir_pedido
+        console.print("\n[yellow]Imprimindo pedido automaticamente...[/yellow]")
+        imprimir_pedido(pedido, cliente)
+        console.print("[green]Pedido impresso com sucesso![/green]")
+        time.sleep(1)
+        
     while True:
         console.clear()
         console.print("\n[yellow]Opções:[/yellow]")

@@ -1,0 +1,2 @@
+imprimir_automaticamente=false
+quantidade_copias=1

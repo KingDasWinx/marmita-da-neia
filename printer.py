@@ -2,10 +2,14 @@ from datetime import datetime
 from escpos.printer import Usb
 from database import DEBUG
 from rich.console import Console
+from config import get_print_quantity
 
 console = Console()
 
-def imprimir_pedido(pedido, cliente, quantidade_copias=1):
+def imprimir_pedido(pedido, cliente, quantidade_copias=None):
+    # Se não foi especificada uma quantidade, usa a das configurações
+    if quantidade_copias is None:
+        quantidade_copias = get_print_quantity()
     data_atual = datetime.now().strftime('%d/%m/%Y')
 
     for i in range(quantidade_copias):
@@ -14,7 +18,7 @@ def imprimir_pedido(pedido, cliente, quantidade_copias=1):
                 p = Usb(0x04b8, 0x0e27)
                 printer = p
             except Exception as e:
-                console.print("[red]Erro: Nenhuma impressora detectada![/red]")
+                console.print("[red]Erro ao imprimir: USB device not found (Device not found or cable not plugged in.)[/red]")
                 return
         else:
             class PrinterDebug:
@@ -78,10 +82,10 @@ def imprimir_pedido(pedido, cliente, quantidade_copias=1):
         printer.text(f"Forma de pagamento: {pedido['forma_pagamento']}\n")
         printer.text(f"Status do pagamento: {pedido['status_pagamento']}\n\n")
 
-        # Get address from tb_endereco instead of endereco
-        printer.text(f"Entrega: {pedido['tb_endereco']['rua']}, {pedido['tb_endereco']['bairro']}\n")
-        if pedido['tb_endereco'].get('referencia'):
-            printer.text(f"Referência: {pedido['tb_endereco']['referencia']}\n")
+        # Get address information
+        printer.text(f"Entrega: {pedido['endereco']['rua']}, {pedido['endereco']['bairro']}\n")
+        if pedido['endereco'].get('referencia'):
+            printer.text(f"Referência: {pedido['endereco']['referencia']}\n")
         printer.text("\n")
         
         printer.set(align='center')

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Debug mode
-DEBUG = True
+DEBUG = False
 
 # Carrega as credenciais do arquivo .env
 SUPABASE_URL = os.getenv('SUPABASE_URL')
@@ -205,18 +205,18 @@ def get_order_details(numero_pedido):
         print(f"Erro ao buscar detalhes do pedido: {str(e)}")
         return None
 
-def delete_order(numero_pedido):
+def delete_order(id_pedido):
     try:
         supabase.table('tb_pedido') \
             .delete() \
-            .eq('numero_pedido', numero_pedido) \
+            .eq('id_pedido', id_pedido) \
             .execute()
         return True
     except Exception as e:
         print(f"Erro ao excluir pedido: {str(e)}")
         return False
 
-def update_order(numero_pedido, marmitas, forma_pagamento, status_pagamento, horario_entrega=None):
+def update_order(id_pedido, marmitas, forma_pagamento, status_pagamento, horario_entrega=None):
     try:
         supabase.table('tb_pedido') \
             .update({
@@ -225,9 +225,22 @@ def update_order(numero_pedido, marmitas, forma_pagamento, status_pagamento, hor
                 'status_pagamento': status_pagamento,
                 'horario_entrega': horario_entrega
             }) \
-            .eq('numero_pedido', numero_pedido) \
+            .eq('id_pedido', id_pedido) \
             .execute()
         return True
     except Exception as e:
         print(f"Erro ao atualizar pedido: {str(e)}")
+        return False
+        
+def update_order_observation(id_pedido, observacao):
+    try:
+        supabase.table('tb_pedido') \
+            .update({
+                'obs': observacao
+            }) \
+            .eq('id_pedido', id_pedido) \
+            .execute()
+        return True
+    except Exception as e:
+        print(f"Erro ao atualizar observação: {str(e)}")
         return False

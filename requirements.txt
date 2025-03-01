@@ -2,3 +2,5 @@ rich>=13.7.0
 supabase==1.2.0
 python-dotenv>=1.0.0
 python-escpos>=3.0a8
+pandas
+openpyxl
