@@ -128,7 +128,7 @@ def get_daily_orders():
         print(f"Erro ao buscar pedidos do dia: {str(e)}")
         return []
 
-def save_order(client_id, address_id, marmitas, bebidas, tipo_feijao, total, forma_pagamento, status_pagamento, horario_entrega, observacoes=None):
+def save_order(client_id, address_id, marmitas, bebidas, tipo_feijao, total, forma_pagamento, status_pagamento, horario_entrega, observacoes=None, numero_pedido=None):
     # Formatar marmitas para JSON
     marmitas_json = []
     for i, m in enumerate(marmitas, 1):
@@ -147,8 +147,9 @@ def save_order(client_id, address_id, marmitas, bebidas, tipo_feijao, total, for
         "tipo_feijao": tipo_feijao
     }
     
-    # Gerar número do pedido
-    numero_pedido = get_next_order_number()
+    # Usar o número do pedido fornecido ou gerar um novo
+    if numero_pedido is None:
+        numero_pedido = get_next_order_number()
     
     # Data e hora atual
     from datetime import datetime

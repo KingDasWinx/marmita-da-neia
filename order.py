@@ -1,7 +1,7 @@
 from rich.console import Console
 from rich.prompt import Prompt
 import os
-from database import get_client, get_addresses, register_address, register_client, save_order, DEBUG
+from database import get_client, get_addresses, register_address, register_client, save_order, get_next_order_number, DEBUG
 from order_items import select_marmitas, select_bebidas, select_adicionais, mostrar_resumo_pedido
 from config import get_auto_print
 import time
@@ -161,8 +161,9 @@ def register_order():
                 subtotais = mostrar_resumo_pedido(marmitas, bebidas, selected_address, new_client)
                 
                 # Salvar pedido
+                numero = get_next_order_number()
                 pedido = {
-                    'numero_pedido': f"PED{random.randint(10000, 99999)}",
+                    'numero_pedido': numero,
                     'marmitas': json.dumps({
                         'marmitas': [{'tamanho': m['produto']['nome'], 'adicionais': m['adicionais']} for m in marmitas],
                         'bebidas': [{'nome': b['produto']['nome'], 'quantidade': b['quantidade'], 'preco': b['produto']['preco']} for b in bebidas],
@@ -186,7 +187,8 @@ def register_order():
                     subtotais['forma_pagamento'],
                     subtotais['status_pagamento'],
                     subtotais['horario_entrega'],
-                    subtotais.get('observacoes')
+                    subtotais.get('observacoes'),
+                    numero_pedido=numero
                 )
                 
                 mostrar_menu_pos_pedido(pedido, new_client)
@@ -205,8 +207,9 @@ def register_order():
                     subtotais = mostrar_resumo_pedido(marmitas, bebidas, selected_address, client)
                     
                     # Salvar pedido
+                    numero = get_next_order_number()
                     pedido = {
-                        'numero_pedido': f"PED{random.randint(10000, 99999)}",
+                        'numero_pedido': numero,
                         'marmitas': json.dumps({
                             'marmitas': [{'tamanho': m['produto']['nome'], 'adicionais': m['adicionais']} for m in marmitas],
                             'bebidas': [{'nome': b['produto']['nome'], 'quantidade': b['quantidade'], 'preco': b['produto']['preco']} for b in bebidas],
@@ -230,7 +233,8 @@ def register_order():
                         subtotais['forma_pagamento'],
                         subtotais['status_pagamento'],
                         subtotais['horario_entrega'],
-                        subtotais.get('observacoes')
+                        subtotais.get('observacoes'),
+                        numero_pedido=numero
                     )
                     
                     mostrar_menu_pos_pedido(pedido, client)

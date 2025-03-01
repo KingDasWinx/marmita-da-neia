@@ -83,9 +83,11 @@ def imprimir_pedido(pedido, cliente, quantidade_copias=None):
         printer.text(f"Status do pagamento: {pedido['status_pagamento']}\n\n")
 
         # Get address information
-        printer.text(f"Entrega: {pedido['endereco']['rua']}, {pedido['endereco']['bairro']}\n")
-        if pedido['endereco'].get('referencia'):
-            printer.text(f"Referência: {pedido['endereco']['referencia']}\n")
+        # Handle both 'tb_endereco' (database query) and 'endereco' (new order) structures
+        endereco_key = 'tb_endereco' if 'tb_endereco' in pedido else 'endereco'
+        printer.text(f"Entrega: {pedido[endereco_key]['rua']}, {pedido[endereco_key]['bairro']}\n")
+        if pedido[endereco_key].get('referencia'):
+            printer.text(f"Referência: {pedido[endereco_key]['referencia']}\n")
         printer.text("\n")
         
         printer.set(align='center')
