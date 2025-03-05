@@ -423,12 +423,15 @@ def novo_cliente():
         return
     
     # Registrar o cliente
-    client_id = register_client(nome)
-    if not client_id:
+    client = register_client(nome)
+    if not client:
         error_panel = Panel("[red]Erro ao cadastrar cliente![/red]", border_style="red")
         console.print(error_panel)
         input("\nPressione Enter para continuar...")
         return
+    
+    # Extrair apenas o ID do cliente do objeto retornado
+    client_id = client['id_cliente']
     
     # Mensagem de sucesso
     success_panel = Panel(

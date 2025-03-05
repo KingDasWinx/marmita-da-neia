@@ -48,6 +48,8 @@ def register_address(client_id, rua, bairro, referencia=None):
 
 def register_client(nome):
     try:
+        # Em vez de deixar o PostgreSQL escolher o ID, vamos explicitamente não incluir o id_cliente
+        # para que o PostgreSQL use a sequência corretamente
         data = {
             'nm_usuario': nome
         }
